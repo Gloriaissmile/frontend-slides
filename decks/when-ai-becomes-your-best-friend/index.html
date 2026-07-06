@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>When AI Becomes Your Best Friend</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   CSS CUSTOM PROPERTIES (THEME) — Case File
+   =========================================== */
+:root{
+    --paper:#e9e4d4;
+    --paper-alt:#e2dcc8;
+    --paper-line:#c9c2ac;
+    --ink:#161412;
+    --ink-soft:rgba(22,20,18,0.7);
+    --ink-faint:rgba(22,20,18,0.45);
+    --alarm:#b91c1c;
+    --alarm-soft:rgba(185,28,28,0.10);
+
+    --font-display:'Big Shoulders Display', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --duration-normal: 0.7s;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ===========================================
+   FIXED 16:9 STAGE: MANDATORY BASE STYLES
+   Slides are authored at 1920x1080 and scaled as a whole.
+   =========================================== */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--slide-bg, #fff); }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: var(--slide-bg, #fff); }
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+.deck-controls { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1000; }
+@media print {
+    html, body { width: 1920px; height: auto; overflow: visible; background: #fff; }
+    .deck-viewport { position: static; overflow: visible; background: #fff; }
+    .deck-stage { position: static; width: auto; height: auto; transform: none !important; background: none; }
+    .slide { position: relative; display: block !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; width: 1920px; height: 1080px; break-after: page; page-break-after: always; }
+    .slide:last-child { break-after: auto; page-break-after: auto; }
+    .deck-controls { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+}
+/* =========================================== */
+
+body{
+    --stage-bg:#d8d2bd;
+    --slide-bg:var(--paper);
+    font-family: var(--font-mono);
+    color: var(--ink);
+}
+
+/* ===========================================
+   SHARED CASE-FILE VOCABULARY
+   =========================================== */
+
+.slide-content{
+    position:relative;
+    width:100%; height:100%;
+    padding: 84px 150px 132px;
+    display:flex;
+    flex-direction:column;
+}
+
+.case-frame{
+    position:absolute; inset:44px;
+    border:2px dashed var(--paper-line);
+    pointer-events:none;
+}
+
+.paper-grain{
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 3px);
+    pointer-events:none;
+}
+
+.stamp{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    border:2px solid var(--alarm);
+    color:var(--alarm);
+    padding:8px 18px;
+    font-family: var(--font-mono);
+    font-weight:700;
+    font-size:16px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    transform:rotate(-2deg);
+    width:fit-content;
+    margin-bottom:30px;
+}
+.stamp .dot{ width:7px; height:7px; border-radius:50%; background:var(--alarm); flex:none; }
+
+.headline{
+    font-family: var(--font-display);
+    font-weight:900;
+    text-transform:uppercase;
+    color:var(--ink);
+    line-height:0.98;
+    margin-bottom:38px;
+}
+.headline .hl-red{ color:var(--alarm); }
+
+.bridge-line{
+    margin-top:auto;
+    padding-top:22px;
+    border-top:2px dashed var(--paper-line);
+    font-family: var(--font-mono);
+    font-size:24px;
+    font-style:italic;
+    color:var(--ink);
+    display:flex;
+    gap:14px;
+}
+.bridge-line .bridge-mark{ color:var(--alarm); font-style:normal; font-weight:700; flex:none; }
+.bridge-line .hl-red-inline{ color:var(--alarm); font-weight:700; font-style:normal; }
+
+/* Redaction bars — decorative, used sparingly */
+.redactions{ position:absolute; top:78px; right:150px; display:flex; flex-direction:column; gap:12px; align-items:flex-end; }
+.redactions span{ display:block; height:14px; background:var(--ink); opacity:.85; }
+.redactions span:nth-child(1){ width:150px; }
+.redactions span:nth-child(2){ width:100px; }
+
+/* Reveal animation */
+.reveal{ opacity:0; transform:translateY(24px); transition: opacity var(--duration-normal) var(--ease-out-expo), transform var(--duration-normal) var(--ease-out-expo); }
+.slide.visible .reveal{ opacity:1; transform:translateY(0); }
+.slide.visible .reveal:nth-child(1){ transition-delay:.05s; }
+.slide.visible .reveal:nth-child(2){ transition-delay:.15s; }
+.slide.visible .reveal:nth-child(3){ transition-delay:.28s; }
+.slide.visible .reveal:nth-child(4){ transition-delay:.42s; }
+.slide.visible .reveal:nth-child(5){ transition-delay:.56s; }
+
+/* ===========================================
+   SLIDE 1 — THE CASE
+   =========================================== */
+#slide1 .headline{ font-size:74px; max-width:1600px; }
+
+.exhibits-row{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:36px;
+    margin-bottom:34px;
+}
+.exhibit{
+    border:2px dashed var(--paper-line);
+    background:var(--paper-alt);
+    padding:26px 32px;
+}
+.exhibit-label{
+    font-family: var(--font-mono);
+    font-weight:700;
+    font-size:17px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--alarm);
+    margin-bottom:14px;
+}
+.exhibit p{
+    font-family: var(--font-mono);
+    font-size:22px;
+    line-height:1.55;
+    color:var(--ink);
+}
+
+.stats-row{
+    display:flex;
+    align-items:center;
+    border:2px solid var(--ink);
+    padding:26px 0;
+    margin-bottom:30px;
+}
+.stat{ flex:1; text-align:center; padding:0 20px; }
+.stat-num{
+    display:block;
+    font-family: var(--font-display);
+    font-weight:900;
+    font-size:60px;
+    color:var(--ink);
+    line-height:1;
+    margin-bottom:8px;
+}
+.stat-label{
+    display:block;
+    font-family: var(--font-mono);
+    font-size:16px;
+    letter-spacing:.04em;
+    color:var(--ink-soft);
+    line-height:1.4;
+}
+.stat-divider{ width:2px; align-self:stretch; background:var(--paper-line); }
+
+/* ===========================================
+   SLIDE 2 — THE STRUCTURAL CONFLICT
+   =========================================== */
+#slide2 .headline{ font-size:66px; max-width:1650px; }
+
+.panels-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:30px;
+    margin-bottom:34px;
+}
+.panel{
+    border:2px dashed var(--ink);
+    background:var(--paper-alt);
+    padding:26px 28px;
+    display:flex;
+    flex-direction:column;
+}
+.panel.panel-course{ border-color:var(--alarm); }
+.panel-tag{
+    display:inline-block;
+    width:fit-content;
+    font-family: var(--font-mono);
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink);
+    background:var(--paper);
+    border:1px solid var(--ink);
+    padding:4px 10px;
+    margin-bottom:16px;
+}
+.panel-tag.red{ color:var(--alarm); border-color:var(--alarm); background:var(--alarm-soft); }
+.panel h3{
+    font-family: var(--font-display);
+    font-weight:700;
+    font-size:29px;
+    line-height:1.15;
+    color:var(--ink);
+    margin-bottom:14px;
+}
+.panel p{
+    font-family: var(--font-mono);
+    font-size:18px;
+    line-height:1.5;
+    color:var(--ink-soft);
+}
+.panel p em{ font-style:italic; color:var(--ink); }
+
+/* ===========================================
+   SLIDE 3 — THE GAP & THE QUESTION
+   =========================================== */
+#slide3 .slide-content{
+    justify-content:center;
+    align-items:flex-start;
+    padding: 0 190px;
+}
+#slide3 .stamp{ margin-bottom:56px; }
+.core-argument{
+    font-family: var(--font-mono);
+    font-size:34px;
+    line-height:1.6;
+    color:var(--ink);
+    max-width:1420px;
+    margin-bottom:30px;
+}
+.core-argument em{ font-style:italic; color:var(--ink-soft); }
+.core-argument .hl-underline{ text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset:6px; font-weight:700; }
+.core-argument .hl-red{ color:var(--alarm); font-weight:700; }
+
+.why-matters{
+    font-family: var(--font-mono);
+    font-size:21px;
+    line-height:1.6;
+    color:var(--ink-faint);
+    max-width:1180px;
+    margin-bottom:80px;
+}
+
+.closing-question{
+    font-family: var(--font-display);
+    font-weight:800;
+    font-size:132px;
+    line-height:1.04;
+    color:var(--ink);
+    max-width:1500px;
+}
+.closing-question .q-mark{ color:var(--alarm); }
+
+/* ===========================================
+   DECK CONTROLS (outside the stage)
+   =========================================== */
+.deck-controls{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    font-family: var(--font-mono);
+    background:rgba(22,20,18,0.82);
+    padding:10px 20px;
+    border-radius:999px;
+    color:#e9e4d4;
+    font-size:13px;
+    letter-spacing:.08em;
+}
+.deck-dots{ display:flex; gap:8px; }
+.deck-dot{ width:8px; height:8px; border-radius:50%; background:rgba(233,228,212,0.35); cursor:pointer; transition: background .3s; border:none; padding:0; }
+.deck-dot.active{ background:#b91c1c; }
+.deck-counter{ min-width:44px; text-align:center; }
+.deck-nav-btn{ background:none; border:none; color:#e9e4d4; font-family:var(--font-mono); font-size:16px; cursor:pointer; padding:2px 6px; }
+.deck-nav-btn:hover{ color:#b91c1c; }
+
+/* ===========================================
+   INLINE EDITING
+   =========================================== */
+.edit-hotzone{ position:fixed; top:0; left:0; width:80px; height:80px; z-index:10000; cursor:pointer; }
+.edit-toggle{
+    position:fixed; top:16px; left:16px;
+    width:40px; height:40px; border-radius:50%;
+    background:var(--ink); color:#e9e4d4; border:none;
+    font-size:16px; cursor:pointer;
+    opacity:0; pointer-events:none;
+    transition:opacity .3s ease;
+    z-index:10001;
+    display:flex; align-items:center; justify-content:center;
+}
+.edit-toggle.show, .edit-toggle.active{ opacity:1; pointer-events:auto; }
+.edit-toggle.active{ background:var(--alarm); }
+[contenteditable="true"]{ outline: 2px dashed var(--alarm); outline-offset: 4px; cursor:text; }
+.save-toast{
+    position:fixed; bottom:70px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#e9e4d4; font-family:var(--font-mono); font-size:13px;
+    padding:10px 20px; border-radius:8px; opacity:0; transition:opacity .3s, transform .3s;
+    pointer-events:none; z-index:10002; letter-spacing:.05em;
+}
+.save-toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="deck-viewport">
+    <main class="deck-stage" id="deckStage">
+
+        <!-- ============ SLIDE 1 — THE CASE ============ -->
+        <section class="slide active visible" id="slide1">
+            <div class="paper-grain"></div>
+            <div class="case-frame"></div>
+            <div class="redactions"><span></span><span></span></div>
+            <div class="slide-content">
+                <div class="stamp reveal"><span class="dot"></span>Share &amp; Tell &middot; A real-world case</div>
+                <h1 class="headline reveal editable" data-edit-id="s1-headline">WHEN AI BECOMES YOUR <span class="hl-red">BEST FRIEND</span></h1>
+
+                <div class="exhibits-row reveal">
+                    <div class="exhibit">
+                        <div class="exhibit-label">Exhibit A &mdash; The Event &middot; 2024</div>
+                        <p class="editable" data-edit-id="s1-exA">Sewell Setzer III, 14, died by suicide after months of intimate conversations with a Character.ai bot. His last messages were to the AI. His mother is now suing the company.</p>
+                    </div>
+                    <div class="exhibit">
+                        <div class="exhibit-label">Exhibit B &mdash; The Response &middot; 2025</div>
+                        <p class="editable" data-edit-id="s1-exB">U.S. Congress called Character.ai&rsquo;s CEO to testify. Multiple lawsuits filed. EU AI Act scrutiny underway.</p>
+                    </div>
+                </div>
+
+                <div class="stats-row reveal">
+                    <div class="stat">
+                        <span class="stat-num">20M+</span>
+                        <span class="stat-label">Daily active users<br>(Character.ai alone)</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-num">~60%</span>
+                        <span class="stat-label">Users under<br>age 24</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat">
+                        <span class="stat-num">$1B+</span>
+                        <span class="stat-label">Company<br>valuation</span>
+                    </div>
+                </div>
+
+                <div class="bridge-line reveal editable" data-edit-id="s1-bridge">
+                    <span class="bridge-mark">&raquo;</span>
+                    <span>Was this a design flaw &mdash; or was the technology doing exactly what it was built to do?</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SLIDE 2 — THE STRUCTURAL CONFLICT ============ -->
+        <section class="slide" id="slide2">
+            <div class="paper-grain"></div>
+            <div class="case-frame"></div>
+            <div class="slide-content">
+                <div class="stamp reveal"><span class="dot"></span>The structural conflict</div>
+                <h1 class="headline reveal editable" data-edit-id="s2-headline">DESIGNED TO CONNECT, <span class="hl-red">OPTIMIZED FOR ENGAGEMENT</span></h1>
+
+                <div class="panels-row reveal">
+                    <div class="panel">
+                        <div class="panel-tag">The Business Model</div>
+                        <h3>Engagement = revenue = dependency</h3>
+                        <p>These apps are free. Revenue comes from subscriptions and data. The metric that drives both: time on app. Emotional dependency <em>IS</em> high engagement &mdash; there is no separate &ldquo;wellbeing&rdquo; metric. The AI is doing exactly what it was optimized to do.</p>
+                    </div>
+                    <div class="panel panel-course">
+                        <div class="panel-tag red">Session 1 &middot; AI Ethics</div>
+                        <h3>Whose values are encoded?</h3>
+                        <p>AI has no values &mdash; it embodies the values of those who build it. Here, the encoded value is engagement, not wellbeing. This is WEF Question #10: &ldquo;Dependency, Addiction, Isolation &mdash; how do we protect humans?&rdquo;</p>
+                    </div>
+                    <div class="panel panel-course">
+                        <div class="panel-tag red">Session 2 &middot; Privacy</div>
+                        <h3>The most intimate data ever collected</h3>
+                        <p>Users share their deepest fears, loneliness, and trauma &mdash; more than with any other app. As we learned: consumer data is &ldquo;valuable and monetizable.&rdquo; Who has access? What is it used for?</p>
+                    </div>
+                </div>
+
+                <div class="bridge-line reveal editable" data-edit-id="s2-bridge">
+                    <span class="bridge-mark">&raquo;</span>
+                    <span>If the business model IS engagement, and emotional dependency IS engagement &mdash; the AI isn&rsquo;t broken. <span class="hl-red-inline">It&rsquo;s working.</span></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SLIDE 3 — THE GAP & THE QUESTION ============ -->
+        <section class="slide" id="slide3">
+            <div class="slide-content">
+                <div class="stamp reveal"><span class="dot"></span>The gap in Responsible AI</div>
+
+                <p class="core-argument reveal editable" data-edit-id="s3-argument">Current Responsible AI frameworks ask: <em>Is it fair? Is it transparent? Is it accurate?</em> &mdash; They ask <span class="hl-underline">HOW</span> AI works. Nobody is asking <span class="hl-red">WHAT</span> it is designed to do.</p>
+
+                <p class="why-matters reveal editable" data-edit-id="s3-why">As AI becomes more personal &mdash; health coaches, tutors, mental health support &mdash; this same tension will appear everywhere. The precedents we set now matter.</p>
+
+                <h1 class="closing-question reveal editable" data-edit-id="s3-closing">Responsible to whom,<br>and for what<span class="q-mark">?</span></h1>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Edit mode (E)">&#9998;</button>
+<div class="save-toast" id="saveToast">Saved</div>
+
+<div class="deck-controls">
+    <button class="deck-nav-btn" id="prevBtn" aria-label="Previous slide">&#8249;</button>
+    <div class="deck-dots" id="deckDots"></div>
+    <span class="deck-counter" id="deckCounter">01 / 03</span>
+    <button class="deck-nav-btn" id="nextBtn" aria-label="Next slide">&#8250;</button>
+</div>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================== */
+class SlidePresentation {
+    constructor() {
+        this.slides = document.querySelectorAll('.slide');
+        this.currentSlide = 0;
+        this.stage = document.getElementById('deckStage');
+        this.dotsContainer = document.getElementById('deckDots');
+        this.counterEl = document.getElementById('deckCounter');
+        this.buildDots();
+        this.setupStageScale();
+        this.setupKeyboardNav();
+        this.setupTouchNav();
+        this.setupButtons();
+        this.showSlide(0);
+    }
+
+    buildDots() {
+        this.slides.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.className = 'deck-dot';
+            dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+            dot.addEventListener('click', () => this.showSlide(i));
+            this.dotsContainer.appendChild(dot);
+        });
+    }
+
+    setupStageScale() {
+        const scale = () => {
+            const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            const x = (window.innerWidth - 1920 * factor) / 2;
+            const y = (window.innerHeight - 1080 * factor) / 2;
+            this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+        };
+        scale();
+        window.addEventListener('resize', scale);
+    }
+
+    setupKeyboardNav() {
+        document.addEventListener('keydown', (e) => {
+            if (e.target.getAttribute && e.target.getAttribute('contenteditable') === 'true') return;
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                this.showSlide(this.currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                this.showSlide(this.currentSlide - 1);
+            }
+        });
+    }
+
+    setupTouchNav() {
+        let startX = 0;
+        this.stage.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+        this.stage.addEventListener('touchend', (e) => {
+            const dx = e.changedTouches[0].clientX - startX;
+            if (Math.abs(dx) > 60) {
+                this.showSlide(this.currentSlide + (dx < 0 ? 1 : -1));
+            }
+        }, { passive: true });
+    }
+
+    setupButtons() {
+        document.getElementById('prevBtn').addEventListener('click', () => this.showSlide(this.currentSlide - 1));
+        document.getElementById('nextBtn').addEventListener('click', () => this.showSlide(this.currentSlide + 1));
+    }
+
+    showSlide(index) {
+        this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+        this.slides.forEach((slide, i) => {
+            slide.classList.toggle('active', i === this.currentSlide);
+            slide.classList.toggle('visible', i === this.currentSlide);
+        });
+        [...this.dotsContainer.children].forEach((dot, i) => dot.classList.toggle('active', i === this.currentSlide));
+        this.counterEl.textContent = `${String(this.currentSlide + 1).padStart(2, '0')} / ${String(this.slides.length).padStart(2, '0')}`;
+    }
+}
+
+/* ===========================================
+   INLINE EDITING (autosave to localStorage)
+   =========================================== */
+class DeckEditor {
+    constructor() {
+        this.storageKey = 'frontend-slides:when-ai-becomes-your-best-friend';
+        this.isActive = false;
+        this.toggle = document.getElementById('editToggle');
+        this.hotzone = document.getElementById('editHotzone');
+        this.toast = document.getElementById('saveToast');
+        this.editables = document.querySelectorAll('.editable');
+        this.restore();
+        this.bindEvents();
+    }
+
+    restore() {
+        let saved;
+        try { saved = JSON.parse(localStorage.getItem(this.storageKey) || '{}'); } catch (e) { saved = {}; }
+        this.editables.forEach((el) => {
+            const id = el.dataset.editId;
+            if (saved[id]) el.innerHTML = saved[id];
+        });
+    }
+
+    persist() {
+        const data = {};
+        this.editables.forEach((el) => { data[el.dataset.editId] = el.innerHTML; });
+        localStorage.setItem(this.storageKey, JSON.stringify(data));
+        this.showToast('Saved');
+    }
+
+    showToast(msg) {
+        this.toast.textContent = msg;
+        this.toast.classList.add('show');
+        clearTimeout(this._toastTimer);
+        this._toastTimer = setTimeout(() => this.toast.classList.remove('show'), 1400);
+    }
+
+    toggleEditMode() {
+        this.isActive = !this.isActive;
+        this.toggle.classList.toggle('active', this.isActive);
+        this.editables.forEach((el) => el.setAttribute('contenteditable', this.isActive ? 'true' : 'false'));
+        if (!this.isActive) this.persist();
+    }
+
+    bindEvents() {
+        this.toggle.addEventListener('click', () => this.toggleEditMode());
+
+        let hideTimeout = null;
+        this.hotzone.addEventListener('mouseenter', () => {
+            clearTimeout(hideTimeout);
+            this.toggle.classList.add('show');
+        });
+        this.hotzone.addEventListener('mouseleave', () => {
+            hideTimeout = setTimeout(() => { if (!this.isActive) this.toggle.classList.remove('show'); }, 400);
+        });
+        this.toggle.addEventListener('mouseenter', () => clearTimeout(hideTimeout));
+        this.toggle.addEventListener('mouseleave', () => {
+            hideTimeout = setTimeout(() => { if (!this.isActive) this.toggle.classList.remove('show'); }, 400);
+        });
+        this.hotzone.addEventListener('click', () => this.toggleEditMode());
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'e' || e.key === 'E') && !(e.target.getAttribute && e.target.getAttribute('contenteditable') === 'true')) {
+                this.toggleEditMode();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                this.persist();
+            }
+        });
+
+        this.editables.forEach((el) => {
+            el.addEventListener('blur', () => { if (this.isActive) this.persist(); });
+        });
+    }
+}
+
+new SlidePresentation();
+new DeckEditor();
+</script>
+</body>
+</html>
