@@ -7,23 +7,23 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@6..144,400;6..144,500;6..144,600;6..144,700;6..144,800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 /* ===========================================
-   CSS CUSTOM PROPERTIES — Editorial Tri-Tone
-   Three colors only: pink, butter, burgundy.
+   CSS CUSTOM PROPERTIES (THEME) — Case File
    =========================================== */
 :root{
-    --pink:#F2B6C6;
-    --butter:#F2D86A;
-    --burgundy:#7A1F35;
+    --paper:#e9e4d4;
+    --paper-alt:#e2dcc8;
+    --paper-line:#c9c2ac;
+    --ink:#161412;
+    --ink-soft:rgba(22,20,18,0.7);
+    --ink-faint:rgba(22,20,18,0.45);
+    --alarm:#b91c1c;
+    --alarm-soft:rgba(185,28,28,0.10);
 
-    --div-on-dark: rgba(246,237,220,0.25);
-    --div-on-light: rgba(122,31,53,0.16);
-
-    --font-display:'Bricolage Grotesque', sans-serif;
-    --font-serif:'Instrument Serif', serif;
+    --font-display:'Big Shoulders Display', sans-serif;
     --font-mono:'JetBrains Mono', monospace;
 
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -55,89 +55,59 @@ img, video, canvas, svg { max-width: 100%; max-height: 100%; }
 }
 /* =========================================== */
 
-body{ font-family: var(--font-display); color: var(--burgundy); }
+body{
+    --stage-bg:#d8d2bd;
+    --slide-bg:var(--paper);
+    font-family: var(--font-mono);
+    color: var(--ink);
+}
 
 /* ===========================================
-   SHARED EDITORIAL TRI-TONE VOCABULARY
-   No box-shadows anywhere. Depth comes from
-   surface contrast and border-radius only.
+   SHARED CASE-FILE VOCABULARY
    =========================================== */
 
 .slide-content{
     position:relative;
     width:100%; height:100%;
-    padding: 96px 64px 118px;
+    padding: 80px 140px 100px;
     display:flex;
     flex-direction:column;
 }
 
-.section-marker{
-    font-family: var(--font-mono);
-    font-size:24px;
-    font-weight:400;
-    letter-spacing:.15em;
-    text-transform:uppercase;
-    margin-bottom:42px;
+.case-frame{ position:absolute; inset:40px; border:2px dashed var(--paper-line); pointer-events:none; }
+.paper-grain{ position:absolute; inset:0; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 1px, transparent 1px, transparent 3px); pointer-events:none; }
+
+.stamp{
+    display:inline-flex; align-items:center; gap:12px;
+    border:2px solid var(--alarm); color:var(--alarm);
+    padding:8px 18px; font-family: var(--font-mono); font-weight:700; font-size:16px;
+    letter-spacing:.16em; text-transform:uppercase; transform:rotate(-2deg);
+    width:fit-content; margin-bottom:26px;
 }
+.stamp .dot{ width:7px; height:7px; border-radius:50%; background:var(--alarm); flex:none; }
 
 .headline{
-    font-family: var(--font-display);
-    font-weight:700;
-    font-size:78px;
-    line-height:1.06;
-    letter-spacing:-0.02em;
-    margin-bottom:44px;
+    font-family: var(--font-display); font-weight:900; text-transform:uppercase;
+    color:var(--ink); line-height:0.98; margin-bottom:32px;
 }
-.headline em{
-    font-family: var(--font-serif);
-    font-style:italic;
-    font-weight:400;
-}
+.headline .hl-red{ color:var(--alarm); }
 
 .bridge-line{
-    margin-top:auto;
-    padding-top:26px;
-    font-family: var(--font-serif);
-    font-style:italic;
-    font-size:42px;
-    line-height:1.4;
-    display:flex;
-    gap:16px;
-    align-items:baseline;
+    margin-top:32px; padding-top:20px; border-top:2px dashed var(--paper-line);
+    font-family: var(--font-mono); font-size:23px; font-style:italic; color:var(--ink);
+    display:flex; gap:14px;
 }
-.bridge-line .quote-mark{ font-size:60px; line-height:0; flex:none; }
-.bridge-line b{ font-family: var(--font-display); font-style:normal; font-weight:600; }
+.bridge-line .bridge-mark{ color:var(--alarm); font-style:normal; font-weight:700; flex:none; }
+.bridge-line .hl-red-inline{ color:var(--alarm); font-weight:700; font-style:normal; }
 
-/* Footer chrome — baked into slide flow, not a floating overlay */
-.footer-chrome{
-    position:absolute;
-    left:64px; right:64px; bottom:36px;
-    display:flex; align-items:center; justify-content:space-between;
-    font-family: var(--font-mono);
-    font-size:16px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    opacity:.75;
+.tag-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.tag{
+    font-family: var(--font-mono); font-size:13px; font-weight:700; letter-spacing:.04em;
+    text-transform:uppercase; border:1.5px solid var(--alarm); color:var(--alarm);
+    padding:4px 10px; background: var(--alarm-soft);
 }
-.footer-dots{ display:flex; gap:10px; align-items:center; }
-.footer-dot{
-    width:8px; height:8px; border-radius:999px;
-    background:currentColor; opacity:.3;
-    border:none; padding:0; cursor:pointer;
-}
-.footer-dot.active{ opacity:1; }
 
-/* Pills — universal tag component, fully rounded, no shadow */
-.pill{
-    display:inline-flex; align-items:center; width:fit-content;
-    border-radius:999px;
-    font-family: var(--font-display);
-    font-weight:500;
-    padding:8px 22px;
-    font-size:20px;
-}
-.pill-dark{ background:var(--burgundy); color:var(--pink); }
-.pill-light{ background:var(--butter); color:var(--burgundy); }
+.icon{ display:block; width:100%; height:100%; }
 
 /* Reveal animation */
 .reveal{ opacity:0; transform:translateY(24px); transition: opacity var(--duration-normal) var(--ease-out-expo), transform var(--duration-normal) var(--ease-out-expo); }
@@ -146,193 +116,119 @@ body{ font-family: var(--font-display); color: var(--burgundy); }
 .slide.visible .reveal:nth-child(2){ transition-delay:.15s; }
 .slide.visible .reveal:nth-child(3){ transition-delay:.28s; }
 .slide.visible .reveal:nth-child(4){ transition-delay:.42s; }
-.slide.visible .reveal:nth-child(5){ transition-delay:.56s; }
+
+/* Footer chrome — baked into slide flow, never overlaps content */
+.footer-chrome{
+    position:absolute; left:80px; right:80px; bottom:34px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-family: var(--font-mono); font-size:15px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-faint);
+}
+.footer-dots{ display:flex; gap:9px; }
+.footer-dot{ width:8px; height:8px; border-radius:999px; background:var(--ink); opacity:.25; border:none; padding:0; cursor:pointer; }
+.footer-dot.active{ opacity:1; background:var(--alarm); }
 
 /* ===========================================
-   SLIDE 1 — THE CASE (burgundy, dark)
+   SLIDE 1 — THE CASE
    =========================================== */
-#slide1{ --stage-bg:#4a1424; --slide-bg:var(--burgundy); }
-#slide1 .section-marker, #slide1 .footer-chrome{ color:var(--pink); }
-#slide1 .headline{ color:var(--butter); max-width:1650px; }
-#slide1 .headline em{ color:var(--pink); }
-#slide1 .bridge-line{ color:var(--pink); }
-#slide1 .bridge-line .quote-mark{ color:var(--pink); }
+#slide1 .headline{ font-size:70px; max-width:1640px; }
 
-.exhibits-row{
+.case-body-row{
     display:grid;
-    grid-template-columns: 1fr 1px 1fr;
-    column-gap:44px;
-    margin-bottom:40px;
+    grid-template-columns: 1.55fr 1fr;
+    gap:36px;
+    flex:1;
+    min-height:0;
 }
-.exhibit-divider{ background:var(--div-on-dark); }
+
+.exhibits-col{ display:flex; flex-direction:column; gap:22px; }
+.exhibit{
+    display:flex; gap:20px;
+    border:2px dashed var(--paper-line); background:var(--paper-alt);
+    padding:24px 26px;
+}
+.exhibit-icon{ flex:none; width:46px; height:46px; color:var(--alarm); margin-top:2px; }
+.exhibit-body{ flex:1; min-width:0; }
 .exhibit-label{
-    font-family: var(--font-mono);
-    font-size:20px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    color:var(--pink);
-    margin-bottom:16px;
+    font-family: var(--font-mono); font-weight:700; font-size:15px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--alarm); margin-bottom:8px;
 }
-.exhibit-year{
-    font-family: var(--font-serif);
-    font-size:56px;
-    font-weight:400;
-    color:var(--butter);
-    line-height:1;
-    margin-bottom:14px;
-}
-.exhibit p{
-    font-family: var(--font-display);
-    font-size:24px;
-    line-height:1.5;
-    color:rgba(242,216,106,0.88);
-}
+.exhibit-lead{ font-family: var(--font-mono); font-size:21px; line-height:1.45; color:var(--ink); }
 
-.stats-row{
-    display:grid;
-    grid-template-columns:1fr 1px 1fr 1px 1fr;
-    column-gap:36px;
-    padding:30px 0;
-    margin-bottom:36px;
-    border-top:1px solid var(--div-on-dark);
-    border-bottom:1px solid var(--div-on-dark);
+.scale-panel{
+    border:2px solid var(--ink); background:var(--paper-alt);
+    padding:26px 28px; display:flex; flex-direction:column;
 }
-.stats-row .exhibit-divider{ height:auto; }
-.stat{ text-align:center; }
-.stat-num{
-    display:block;
-    font-family: var(--font-display);
-    font-weight:700;
-    font-size:76px;
-    letter-spacing:-0.02em;
-    color:var(--butter);
-    line-height:1;
-    margin-bottom:10px;
+.scale-title{
+    font-family: var(--font-mono); font-weight:700; font-size:15px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--ink-soft); margin-bottom:22px;
+    padding-bottom:14px; border-bottom:2px dashed var(--paper-line);
 }
-.stat-label{
-    display:block;
-    font-family: var(--font-mono);
-    font-size:16px;
-    letter-spacing:.1em;
-    text-transform:uppercase;
-    color:rgba(242,182,198,0.85);
-    line-height:1.5;
-}
+.scale-rows{ display:flex; flex-direction:column; flex:1; justify-content:space-between; }
+.scale-row{ display:flex; align-items:center; gap:18px; }
+.scale-row + .scale-row{ margin-top:16px; padding-top:16px; border-top:1px dashed var(--paper-line); }
+.scale-icon{ flex:none; width:38px; height:38px; color:var(--ink); }
+.scale-num{ font-family: var(--font-display); font-weight:900; font-size:46px; color:var(--ink); line-height:1; }
+.scale-label{ font-family: var(--font-mono); font-size:14px; color:var(--ink-soft); line-height:1.35; margin-top:2px; }
 
 /* ===========================================
-   SLIDE 2 — THE STRUCTURAL CONFLICT (pink, mid)
+   SLIDE 2 — THE STRUCTURAL CONFLICT
    =========================================== */
-#slide2{ --stage-bg:#d99aac; --slide-bg:var(--pink); }
-#slide2 .section-marker, #slide2 .footer-chrome{ color:var(--burgundy); }
-#slide2 .headline{ color:var(--burgundy); max-width:1700px; }
-#slide2 .headline em{ color:var(--burgundy); }
-#slide2 .bridge-line{ color:var(--burgundy); }
-#slide2 .bridge-line .quote-mark{ color:var(--burgundy); }
+#slide2 .slide-content{ justify-content:center; }
+#slide2 .headline{ font-size:66px; max-width:1670px; }
+#slide2 .panel{ padding:32px 32px 34px; }
+#slide2 .panel h3{ font-size:30px; margin-bottom:16px; }
+#slide2 .panel p{ font-size:19px; line-height:1.55; }
+#slide2 .panel-icon{ width:40px; height:40px; }
+#slide2 .bridge-line{ font-size:26px; }
 
-.panels-row{
-    display:grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap:32px;
-    margin-bottom:40px;
-}
+.panels-row{ display:grid; grid-template-columns: repeat(3, 1fr); gap:28px; align-items:start; }
 .panel{
-    border-radius:28px;
-    padding:28px 28px 30px;
-    display:flex;
-    flex-direction:column;
+    border:2px dashed var(--ink); background:var(--paper-alt);
+    padding:24px 26px; display:flex; flex-direction:column;
 }
-.panel.panel-dark{ background:var(--burgundy); }
-.panel.panel-light{ background:var(--butter); }
-.panel .pill{ margin-bottom:20px; }
-.panel h3{
-    font-family: var(--font-display);
-    font-weight:600;
-    font-size:32px;
-    line-height:1.15;
-    letter-spacing:-0.01em;
-    margin-bottom:14px;
+.panel.panel-course{ border-color:var(--alarm); }
+.panel-icon-row{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+.panel-icon{ flex:none; width:34px; height:34px; color:var(--ink); }
+.panel.panel-course .panel-icon{ color:var(--alarm); }
+.panel-tag{
+    font-family: var(--font-mono); font-weight:700; font-size:13px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--ink); background:var(--paper); border:1px solid var(--ink); padding:3px 9px;
 }
-.panel.panel-dark h3{ color:var(--butter); }
-.panel.panel-light h3{ color:var(--burgundy); }
-.panel p{
-    font-family: var(--font-display);
-    font-size:20px;
-    line-height:1.5;
-}
-.panel.panel-dark p{ color:rgba(242,216,106,0.85); }
-.panel.panel-light p{ color:rgba(122,31,53,0.78); }
+.panel-tag.red{ color:var(--alarm); border-color:var(--alarm); background:var(--alarm-soft); }
+.panel h3{ font-family: var(--font-display); font-weight:700; font-size:27px; line-height:1.15; color:var(--ink); margin-bottom:12px; }
+.panel p{ font-family: var(--font-mono); font-size:17px; line-height:1.45; color:var(--ink-soft); margin-bottom:16px; }
 
 /* ===========================================
-   SLIDE 3 — THE GAP & THE QUESTION (burgundy, dark, closer)
+   SLIDE 3 — THE GAP & THE QUESTION
    =========================================== */
-#slide3{ --stage-bg:#4a1424; --slide-bg:var(--burgundy); }
-#slide3 .section-marker, #slide3 .footer-chrome{ color:var(--butter); }
-#slide3 .slide-content{ justify-content:center; }
-
-.core-argument{
-    font-family: var(--font-display);
-    font-weight:500;
-    font-size:52px;
-    line-height:1.5;
-    letter-spacing:-0.01em;
-    color:var(--butter);
-    max-width:1500px;
-    margin-bottom:30px;
-}
-.core-argument em{
-    font-family: var(--font-serif);
-    font-style:italic;
-    font-weight:400;
-    color:var(--pink);
-}
-.core-argument .hl-how{ font-weight:700; }
-
-.why-matters{
-    font-family: var(--font-display);
-    font-size:24px;
-    line-height:1.6;
-    color:rgba(242,216,106,0.62);
-    max-width:1220px;
-    margin-bottom:76px;
-}
-
-.closing-question{
-    font-family: var(--font-display);
-    font-weight:700;
-    font-size:138px;
-    line-height:1.08;
-    letter-spacing:-0.03em;
-    color:var(--butter);
-    max-width:1600px;
-}
-.closing-question .q-mark{
-    font-family: var(--font-serif);
-    font-style:italic;
-    font-weight:400;
-    color:var(--pink);
-}
+#slide3 .slide-content{ justify-content:center; align-items:flex-start; padding: 0 190px; position:relative; }
+#slide3 .bg-icon{ position:absolute; right:120px; top:50%; transform:translateY(-50%); width:420px; height:420px; color:var(--ink); opacity:.05; pointer-events:none; }
+#slide3 .stamp{ margin-bottom:48px; }
+.core-argument{ font-family: var(--font-mono); font-size:32px; line-height:1.6; color:var(--ink); max-width:1420px; margin-bottom:28px; }
+.core-argument em{ font-style:italic; color:var(--ink-soft); }
+.core-argument .hl-underline{ text-decoration: underline; text-decoration-color: var(--ink); text-underline-offset:6px; font-weight:700; }
+.core-argument .hl-red{ color:var(--alarm); font-weight:700; }
+.why-matters{ font-family: var(--font-mono); font-size:20px; line-height:1.6; color:var(--ink-faint); max-width:1180px; margin-bottom:64px; }
+.closing-question{ font-family: var(--font-display); font-weight:800; font-size:124px; line-height:1.04; color:var(--ink); max-width:1500px; }
+.closing-question .q-mark{ color:var(--alarm); }
 
 /* ===========================================
-   INLINE EDITING (kept as a utility layer,
-   outside the slide design system)
+   INLINE EDITING
    =========================================== */
 .edit-hotzone{ position:fixed; top:0; left:0; width:80px; height:80px; z-index:10000; cursor:pointer; }
 .edit-toggle{
-    position:fixed; top:16px; left:16px;
-    width:38px; height:38px; border-radius:50%;
-    background:var(--burgundy); color:var(--butter); border:none;
-    font-size:15px; cursor:pointer;
-    opacity:0; pointer-events:none;
-    transition:opacity .3s ease;
-    z-index:10001;
+    position:fixed; top:16px; left:16px; width:40px; height:40px; border-radius:50%;
+    background:var(--ink); color:#e9e4d4; border:none; font-size:16px; cursor:pointer;
+    opacity:0; pointer-events:none; transition:opacity .3s ease; z-index:10001;
     display:flex; align-items:center; justify-content:center;
 }
 .edit-toggle.show, .edit-toggle.active{ opacity:1; pointer-events:auto; }
-.edit-toggle.active{ background:var(--pink); color:var(--burgundy); }
-[contenteditable="true"]{ outline: 2px dashed var(--pink); outline-offset: 4px; cursor:text; }
+.edit-toggle.active{ background:var(--alarm); }
+[contenteditable="true"]{ outline: 2px dashed var(--alarm); outline-offset: 4px; cursor:text; }
 .save-toast{
-    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
-    background:var(--burgundy); color:var(--butter); font-family:var(--font-mono); font-size:13px;
+    position:fixed; bottom:70px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#e9e4d4; font-family:var(--font-mono); font-size:13px;
     padding:10px 20px; border-radius:8px; opacity:0; transition:opacity .3s, transform .3s;
     pointer-events:none; z-index:10002; letter-spacing:.05em;
 }
@@ -346,45 +242,88 @@ body{ font-family: var(--font-display); color: var(--burgundy); }
 
         <!-- ============ SLIDE 1 — THE CASE ============ -->
         <section class="slide active visible" id="slide1">
+            <div class="paper-grain"></div>
+            <div class="case-frame"></div>
             <div class="slide-content">
-                <p class="section-marker reveal">&sect; 01 &mdash; The Case</p>
-                <h1 class="headline reveal editable" data-edit-id="s1-headline">When AI becomes your <em>best friend</em></h1>
+                <div class="stamp reveal"><span class="dot"></span>Share &amp; Tell &middot; A real-world case</div>
+                <h1 class="headline reveal editable" data-edit-id="s1-headline">WHEN AI BECOMES YOUR <span class="hl-red">BEST FRIEND</span></h1>
 
-                <div class="exhibits-row reveal">
-                    <div class="exhibit">
-                        <div class="exhibit-label">2024 &mdash; The Event</div>
-                        <div class="exhibit-year">01</div>
-                        <p class="editable" data-edit-id="s1-exA">Sewell Setzer III, 14, died by suicide after months of intimate conversations with a Character.ai bot. His last messages were to the AI. His mother is now suing the company.</p>
+                <div class="case-body-row reveal">
+                    <div class="exhibits-col">
+                        <div class="exhibit">
+                            <svg class="exhibit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+                                <path d="M12 3.5 L21.5 20 H2.5 Z"/>
+                                <line x1="12" y1="9.5" x2="12" y2="14.2"/>
+                                <circle cx="12" cy="17" r="0.9" fill="currentColor" stroke="none"/>
+                            </svg>
+                            <div class="exhibit-body">
+                                <div class="exhibit-label">Exhibit A &mdash; 2024</div>
+                                <p class="exhibit-lead editable" data-edit-id="s1-exA">Sewell Setzer III, 14, died by suicide after months of intimate chats with a Character.ai bot &mdash; his last messages were to the AI.</p>
+                                <div class="tag-row">
+                                    <span class="tag">Mother now suing</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exhibit">
+                            <svg class="exhibit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round">
+                                <rect x="5" y="3" width="14" height="18" rx="1.5"/>
+                                <line x1="8" y1="8" x2="16" y2="8"/>
+                                <line x1="8" y1="12" x2="16" y2="12"/>
+                                <line x1="8" y1="16" x2="13" y2="16"/>
+                            </svg>
+                            <div class="exhibit-body">
+                                <div class="exhibit-label">Exhibit B &mdash; 2025</div>
+                                <p class="exhibit-lead editable" data-edit-id="s1-exB">Regulators and courts moved in fast.</p>
+                                <div class="tag-row">
+                                    <span class="tag">CEO testified in Congress</span>
+                                    <span class="tag">Lawsuits filed</span>
+                                    <span class="tag">EU AI Act scrutiny</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="exhibit-divider"></div>
-                    <div class="exhibit">
-                        <div class="exhibit-label">2025 &mdash; The Response</div>
-                        <div class="exhibit-year">02</div>
-                        <p class="editable" data-edit-id="s1-exB">U.S. Congress called Character.ai&rsquo;s CEO to testify. Multiple lawsuits filed. EU AI Act scrutiny underway.</p>
+
+                    <div class="scale-panel">
+                        <div class="scale-title">Logged at Scale</div>
+                        <div class="scale-rows">
+                            <div class="scale-row">
+                                <svg class="scale-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="8" r="3.2"/>
+                                    <path d="M5 20c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/>
+                                </svg>
+                                <div>
+                                    <div class="scale-num">20M+</div>
+                                    <div class="scale-label">Daily active users (Character.ai alone)</div>
+                                </div>
+                            </div>
+                            <div class="scale-row">
+                                <svg class="scale-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="8"/>
+                                    <path d="M12 12V4A8 8 0 0 1 19 16Z" fill="currentColor" stroke="none"/>
+                                </svg>
+                                <div>
+                                    <div class="scale-num">~60%</div>
+                                    <div class="scale-label">Users under age 24</div>
+                                </div>
+                            </div>
+                            <div class="scale-row">
+                                <svg class="scale-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="8"/>
+                                    <path d="M12 7v10M9.3 9.3c0-1.3 1.2-2.3 2.7-2.3s2.7 1 2.7 2.1c0 2.3-5.4 1.7-5.4 4 0 1.1 1.2 2.1 2.7 2.1s2.7-1 2.7-2.3"/>
+                                </svg>
+                                <div>
+                                    <div class="scale-num">$1B+</div>
+                                    <div class="scale-label">Company valuation</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="stats-row reveal">
-                    <div class="stat">
-                        <span class="stat-num">20M+</span>
-                        <span class="stat-label">Daily active users<br>(Character.ai alone)</span>
-                    </div>
-                    <div class="exhibit-divider"></div>
-                    <div class="stat">
-                        <span class="stat-num">~60%</span>
-                        <span class="stat-label">Users under<br>age 24</span>
-                    </div>
-                    <div class="exhibit-divider"></div>
-                    <div class="stat">
-                        <span class="stat-num">$1B+</span>
-                        <span class="stat-label">Company<br>valuation</span>
-                    </div>
-                </div>
-
-                <p class="bridge-line reveal editable" data-edit-id="s1-bridge">
-                    <span class="quote-mark">&ldquo;</span>
+                <div class="bridge-line reveal editable" data-edit-id="s1-bridge">
+                    <span class="bridge-mark">&raquo;</span>
                     <span>Was this a design flaw &mdash; or was the technology doing exactly what it was built to do?</span>
-                </p>
+                </div>
             </div>
             <div class="footer-chrome">
                 <span>When AI Becomes Your Best Friend</span>
@@ -394,32 +333,67 @@ body{ font-family: var(--font-display); color: var(--burgundy); }
 
         <!-- ============ SLIDE 2 — THE STRUCTURAL CONFLICT ============ -->
         <section class="slide" id="slide2">
+            <div class="paper-grain"></div>
+            <div class="case-frame"></div>
             <div class="slide-content">
-                <p class="section-marker reveal">&sect; 02 &mdash; The Structural Conflict</p>
-                <h1 class="headline reveal editable" data-edit-id="s2-headline">Designed to connect, <em>optimized for engagement</em></h1>
+                <div class="stamp reveal"><span class="dot"></span>The structural conflict</div>
+                <h1 class="headline reveal editable" data-edit-id="s2-headline">DESIGNED TO CONNECT, <span class="hl-red">OPTIMIZED FOR ENGAGEMENT</span></h1>
 
                 <div class="panels-row reveal">
-                    <div class="panel panel-dark">
-                        <span class="pill pill-light">The Business Model</span>
+                    <div class="panel">
+                        <div class="panel-icon-row">
+                            <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <circle cx="12" cy="12" r="8"/>
+                                <path d="M12 7v10M9.3 9.3c0-1.3 1.2-2.3 2.7-2.3s2.7 1 2.7 2.1c0 2.3-5.4 1.7-5.4 4 0 1.1 1.2 2.1 2.7 2.1s2.7-1 2.7-2.3"/>
+                            </svg>
+                            <span class="panel-tag">The Business Model</span>
+                        </div>
                         <h3>Engagement = revenue = dependency</h3>
-                        <p>These apps are free. Revenue comes from subscriptions and data. The metric that drives both: time on app. Emotional dependency IS high engagement &mdash; there is no separate &ldquo;wellbeing&rdquo; metric. The AI is doing exactly what it was optimized to do.</p>
+                        <p>Free apps, paid by subscriptions and data. The metric that drives both is time on app &mdash; there is no separate &ldquo;wellbeing&rdquo; metric.</p>
+                        <div class="tag-row">
+                            <span class="tag">Time on app</span>
+                            <span class="tag">No wellbeing metric</span>
+                        </div>
                     </div>
-                    <div class="panel panel-light">
-                        <span class="pill pill-dark">Session 1 &middot; AI Ethics</span>
+                    <div class="panel panel-course">
+                        <div class="panel-icon-row">
+                            <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="3" x2="12" y2="19"/>
+                                <line x1="5" y1="7" x2="19" y2="7"/>
+                                <path d="M5 7l-3 6a3 3 0 0 0 6 0z"/>
+                                <path d="M19 7l-3 6a3 3 0 0 0 6 0z"/>
+                                <line x1="8" y1="21" x2="16" y2="21"/>
+                            </svg>
+                            <span class="panel-tag red">Session 1 &middot; AI Ethics</span>
+                        </div>
                         <h3>Whose values are encoded?</h3>
-                        <p>AI has no values &mdash; it embodies the values of those who build it. Here, the encoded value is engagement, not wellbeing. This is WEF Question #10: &ldquo;Dependency, Addiction, Isolation &mdash; how do we protect humans?&rdquo;</p>
+                        <p>AI has no values of its own &mdash; it embodies its builders&rsquo;. Here, the encoded value is engagement, not wellbeing.</p>
+                        <div class="tag-row">
+                            <span class="tag">WEF Q#10</span>
+                            <span class="tag">Values encoded</span>
+                        </div>
                     </div>
-                    <div class="panel panel-dark">
-                        <span class="pill pill-light">Session 2 &middot; Privacy</span>
+                    <div class="panel panel-course">
+                        <div class="panel-icon-row">
+                            <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+                                <rect x="5" y="11" width="14" height="10" rx="1.5"/>
+                                <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+                            </svg>
+                            <span class="panel-tag red">Session 2 &middot; Privacy</span>
+                        </div>
                         <h3>The most intimate data ever collected</h3>
-                        <p>Users share their deepest fears, loneliness, and trauma &mdash; more than with any other app. As we learned: consumer data is &ldquo;valuable and monetizable.&rdquo; Who has access? What is it used for?</p>
+                        <p>Users share fears, loneliness, and trauma &mdash; more than on any other app. Consumer data is &ldquo;valuable and monetizable.&rdquo;</p>
+                        <div class="tag-row">
+                            <span class="tag">Deepest fears shared</span>
+                            <span class="tag">Monetizable</span>
+                        </div>
                     </div>
                 </div>
 
-                <p class="bridge-line reveal editable" data-edit-id="s2-bridge">
-                    <span class="quote-mark">&ldquo;</span>
-                    <span>If the business model IS engagement, and emotional dependency IS engagement &mdash; the AI isn&rsquo;t broken. <b>It&rsquo;s working.</b></span>
-                </p>
+                <div class="bridge-line reveal editable" data-edit-id="s2-bridge">
+                    <span class="bridge-mark">&raquo;</span>
+                    <span>If the business model IS engagement, and emotional dependency IS engagement &mdash; the AI isn&rsquo;t broken. <span class="hl-red-inline">It&rsquo;s working.</span></span>
+                </div>
             </div>
             <div class="footer-chrome">
                 <span>When AI Becomes Your Best Friend</span>
@@ -430,9 +404,10 @@ body{ font-family: var(--font-display); color: var(--burgundy); }
         <!-- ============ SLIDE 3 — THE GAP & THE QUESTION ============ -->
         <section class="slide" id="slide3">
             <div class="slide-content">
-                <p class="section-marker reveal">&sect; 03 &mdash; The Gap in Responsible AI</p>
+                <svg class="bg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M9 9a3 3 0 1 1 4.2 2.7c-1 .5-1.7 1.1-1.7 2.3v.5" stroke-width="1.2"/><circle cx="12" cy="18" r="0.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="11" stroke-width="0.6"/></svg>
+                <div class="stamp reveal"><span class="dot"></span>The gap in Responsible AI</div>
 
-                <p class="core-argument reveal editable" data-edit-id="s3-argument">Current Responsible AI frameworks ask: <em>Is it fair? Is it transparent? Is it accurate?</em> &mdash; They ask <span class="hl-how">HOW</span> AI works. Nobody is asking <em>what</em> it is designed to do.</p>
+                <p class="core-argument reveal editable" data-edit-id="s3-argument">Current Responsible AI frameworks ask: <em>Is it fair? Is it transparent? Is it accurate?</em> &mdash; They ask <span class="hl-underline">HOW</span> AI works. Nobody is asking <span class="hl-red">WHAT</span> it is designed to do.</p>
 
                 <p class="why-matters reveal editable" data-edit-id="s3-why">As AI becomes more personal &mdash; health coaches, tutors, mental health support &mdash; this same tension will appear everywhere. The precedents we set now matter.</p>
 
@@ -454,10 +429,6 @@ body{ font-family: var(--font-display); color: var(--burgundy); }
 <script>
 /* ===========================================
    SLIDE PRESENTATION CONTROLLER
-   Navigation is keyboard/touch first, per the
-   Editorial Tri-Tone system (no floating chrome).
-   The footer dot-row in each slide is clickable
-   as a convenience affordance only.
    =========================================== */
 class SlidePresentation {
     constructor() {
@@ -540,7 +511,7 @@ class SlidePresentation {
    =========================================== */
 class DeckEditor {
     constructor() {
-        this.storageKey = 'frontend-slides:when-ai-becomes-your-best-friend:tri-tone';
+        this.storageKey = 'frontend-slides:when-ai-becomes-your-best-friend:case-file-v2';
         this.isActive = false;
         this.toggle = document.getElementById('editToggle');
         this.hotzone = document.getElementById('editHotzone');
