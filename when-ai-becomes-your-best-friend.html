@@ -343,10 +343,10 @@ svg {
 .s1-dek {
     font-family: var(--serif);
     font-weight: 400;
-    font-size: 31px;
+    font-size: 35px;
     line-height: 1.42;
     color: var(--ink);
-    max-width: 1080px;
+    max-width: 1150px;
 }
 .s1-dek .last-messages {
     font-style: italic;
@@ -380,38 +380,34 @@ svg {
     max-width: 170px;
 }
 
-/* Aftermath strip */
+/* Aftermath timeline — stacked rows under the dek */
 .s1-aftermath {
+    margin-top: 42px;
+}
+.s1-aftermath .label {
+    display: block;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ink-faint);
+}
+.s1-aftermath ul { list-style: none; }
+.s1-aftermath li {
     display: flex;
     align-items: baseline;
-    gap: 36px;
-    margin-top: 40px;
-    padding-top: 26px;
-    border-top: 1px solid var(--ink-faint);
-}
-.s1-aftermath .label { white-space: nowrap; }
-.s1-aftermath ul {
-    display: flex;
-    gap: 36px;
-    list-style: none;
-    font-size: 19px;
+    justify-content: space-between;
+    gap: 32px;
+    font-size: 24px;
     font-weight: 500;
     color: var(--ink);
-}
-.s1-aftermath li { display: flex; align-items: baseline; gap: 14px; }
-.s1-aftermath li + li::before {
-    content: '';
-    width: 1px;
-    height: 16px;
-    align-self: center;
-    background: var(--ink-faint);
-    margin-right: 22px;
+    padding: 17px 0;
+    border-bottom: 1px solid var(--ink-faint);
 }
 .s1-aftermath .year {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     color: var(--crimson);
+    white-space: nowrap;
 }
 
 /* Closing question, pinned to the slide foot */
@@ -419,10 +415,10 @@ svg {
     margin-top: auto;
     font-family: var(--serif);
     font-style: italic;
-    font-weight: 400;
-    font-size: 41px;
-    line-height: 1.25;
-    color: var(--ink-soft);
+    font-weight: 420;
+    font-size: 46px;
+    line-height: 1.22;
+    color: var(--ink);
 }
 .s1-close .crimson { font-weight: 500; }
 
@@ -448,10 +444,10 @@ svg {
 .s2-equation {
     font-family: var(--serif);
     font-weight: 480;
-    font-size: 92px;
+    font-size: 100px;
     line-height: 1.05;
     letter-spacing: -0.02em;
-    margin-top: 82px;
+    margin-top: 78px;
 }
 .s2-equation .eq {
     font-weight: 300;
@@ -459,12 +455,12 @@ svg {
     padding: 0 10px;
 }
 .s2-note {
-    margin-top: 26px;
-    font-size: 24px;
+    margin-top: 30px;
+    font-size: 27px;
     font-weight: 500;
     line-height: 1.5;
     color: var(--ink-soft);
-    max-width: 1250px;
+    max-width: 1350px;
 }
 .s2-note strong { color: var(--ink); font-weight: 600; }
 
@@ -473,7 +469,9 @@ svg {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 64px;
-    margin-top: 84px;
+    /* auto margins split the leftover space evenly above and below,
+       so no single dead band forms before the verdict */
+    margin: auto 0;
 }
 .s2-tie {
     border-top: 3px solid var(--ink);
@@ -483,14 +481,14 @@ svg {
 .s2-tie .tie-label .crimson { color: var(--crimson); }
 .s2-tie p {
     font-family: var(--serif);
-    font-size: 31px;
+    font-size: 34px;
     line-height: 1.4;
 }
 .s2-tie p em { font-style: italic; color: var(--crimson); }
 .s2-tie .tie-tag {
     display: inline-block;
-    margin-top: 18px;
-    font-size: 14px;
+    margin-top: 22px;
+    font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -502,70 +500,67 @@ svg {
 
 /* Verdict band: full-bleed ink, foreshadows slide 3 */
 .s2-verdict {
-    margin: auto -84px 0;
+    margin: 0 -84px;
     background: var(--ink);
     color: var(--paper);
-    padding: 62px 84px 68px;
+    padding: 74px 84px 82px;
     font-family: var(--serif);
     font-style: italic;
     font-weight: 400;
-    font-size: 58px;
+    font-size: 64px;
     line-height: 1.1;
 }
 .s2-verdict .working { color: var(--ember); font-weight: 500; }
 
 /* ===========================================
-   SLIDE 3 — THE GAP  (nearly empty, ink-black)
-   A whisper of setup, then one dominating question.
+   SLIDE 3 — THE GAP  (nearly empty)
+   Same paper as the rest of the deck: a whisper
+   of setup, then one dominating question.
    =========================================== */
 .s3 {
-    background: var(--ink);
-    color: var(--paper);
     padding: 56px 84px 60px;
     display: flex;
     flex-direction: column;
 }
-.s3 .folio-ghost { color: var(--paper); opacity: 0.035; }
 .s3-header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
     padding-bottom: 20px;
-    border-bottom: 1px solid rgba(244, 239, 229, 0.14);
+    border-bottom: 1px solid var(--ink-faint);
 }
-.s3 .label { color: var(--paper-soft); }
 
 /* The quiet setup lines */
 .s3-setup {
-    margin-top: 78px;
-    font-size: 24px;
+    margin-top: 80px;
+    font-size: 27px;
     font-weight: 400;
     line-height: 1.75;
-    color: var(--paper-soft);
-    max-width: 1150px;
+    color: var(--ink-soft);
+    max-width: 1300px;
 }
 .s3-setup .hw {
     font-family: var(--serif);
     font-style: italic;
-    font-size: 27px;
-    color: var(--paper);
+    font-size: 31px;
+    color: var(--crimson);
 }
-.s3-setup .nobody { color: var(--paper); font-weight: 500; }
+.s3-setup .nobody { color: var(--ink); font-weight: 500; }
 
 /* The question owns the slide */
 .s3-question {
     margin: auto 0;               /* vertically centers in leftover space */
     padding-bottom: 90px;
     font-family: var(--serif);
-    font-weight: 380;
+    font-weight: 400;
     font-size: 156px;
     line-height: 1.06;
     letter-spacing: -0.015em;
-    color: var(--paper);
+    color: var(--ink);
 }
 .s3-question em {
     font-style: italic;
-    color: var(--ember);
+    color: var(--crimson);
 }
 
 /* ===========================================
@@ -645,12 +640,26 @@ body.editing [data-editable]:focus { outline: 2px solid var(--crimson); }
             </h1>
 
             <div class="s1-main">
-                <p class="s1-dek reveal" style="--d:.35s" data-editable>
-                    In 2024, Sewell Setzer III, 14, died by suicide after months of
-                    intimate conversations with a Character.ai bot.
-                    <span class="last-messages">His last messages were to the AI.</span>
-                    His mother is suing the company.
-                </p>
+                <div class="s1-left">
+                    <p class="s1-dek reveal" style="--d:.35s" data-editable>
+                        In 2024, Sewell Setzer III, 14, died by suicide after months of
+                        intimate conversations with a Character.ai bot.
+                        <span class="last-messages">His last messages were to the AI.</span>
+                        His mother is suing the company.
+                    </p>
+
+                    <div class="s1-aftermath reveal" style="--d:.75s">
+                        <span class="label crimson">The aftermath</span>
+                        <ul>
+                            <li data-editable>Character.ai’s CEO testifies before Congress
+                                <span class="year">2025</span></li>
+                            <li data-editable>Multiple lawsuits against the company
+                                <span class="year">Ongoing</span></li>
+                            <li data-editable>Scrutiny under the EU AI Act
+                                <span class="year">Regulatory</span></li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="s1-stats" role="list">
                     <div class="s1-stat reveal" style="--d:.45s" role="listitem">
@@ -668,18 +677,9 @@ body.editing [data-editable]:focus { outline: 2px solid var(--crimson); }
                 </div>
             </div>
 
-            <div class="s1-aftermath reveal" style="--d:.75s">
-                <span class="label crimson">The aftermath —</span>
-                <ul data-editable>
-                    <li>Character.ai’s CEO testifies before Congress <span class="year">2025</span></li>
-                    <li>Multiple lawsuits</li>
-                    <li>EU AI Act scrutiny</li>
-                </ul>
-            </div>
-
             <p class="s1-close reveal" style="--d:.9s" data-editable>
-                Was this a design flaw — or was the technology doing
-                <span class="crimson">exactly what it was built to do?</span>
+                Was this a design flaw — or was the technology<br>
+                doing <span class="crimson">exactly what it was built to do?</span>
             </p>
         </section>
 
