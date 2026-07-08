@@ -458,8 +458,6 @@ svg {
    chrome suppressed · catalogue number · type only
    =========================================== */
 .b3 {
-    background: var(--fire);
-    color: var(--ink);
     padding: 60px 106px 66px;
     display: flex;
     flex-direction: column;
@@ -469,18 +467,18 @@ svg {
     font-size: 20px;
     font-weight: 500;
     letter-spacing: 0.1em;
-    color: var(--ink-45);
+    color: var(--cream-hint);
 }
-.b3-rule { width: 36px; height: 2px; background: var(--ink); margin-top: 70px; }
+.b3-rule { width: 36px; height: 2px; background: var(--fire); margin-top: 70px; }
 .b3-setup {
     margin-top: 26px;
     font-size: 27px;
     font-weight: 400;
     line-height: 1.65;
-    color: var(--ink-75);
+    color: var(--cream-muted);
     max-width: 1250px;
 }
-.b3-setup strong { color: var(--ink); font-weight: 900; }
+.b3-setup strong { color: var(--fire); font-weight: 900; }
 .b3-q {
     margin: auto 0 24px;
     font-weight: 900;
@@ -488,8 +486,9 @@ svg {
     line-height: 0.92;
     letter-spacing: -0.04em;
     text-transform: lowercase;
-    color: var(--ink);
+    color: var(--cream);
 }
+.b3-q .fire { color: var(--fire); }
 
 /* ===========================================
    DECK CHROME — folio counter + hint (window level)
@@ -697,7 +696,7 @@ body.editing [data-editable]:focus { outline: 2px solid var(--fire); }
             </p>
 
             <h2 class="b3-q reveal" style="--d:.7s" data-editable>
-                responsible<br>to whom,<br>and for what?
+                responsible<br>to <span class="fire">whom</span>,<br>and for <span class="fire">what</span>?
             </h2>
         </section>
 
